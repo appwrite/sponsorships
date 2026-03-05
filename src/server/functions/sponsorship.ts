@@ -151,7 +151,7 @@ export const updateApplicationFn = createServerFn({ method: 'POST' })
       }
 
       const fullName = `${row.firstName} ${row.lastName}`
-      const companyName = row.organizationName
+      const eventName = row.eventName
       // Use the coupon from the incoming request (may have just been edited)
       const couponCode =
         data.couponCode ??
@@ -161,7 +161,7 @@ export const updateApplicationFn = createServerFn({ method: 'POST' })
       const htmlBody = `
 <p>Hi ${fullName},</p>
 
-<p>We're excited to officially sponsor ${companyName}! 🎉</p>
+<p>We're excited to officially sponsor ${eventName}! 🎉</p>
 
 <p>Thank you for providing the required details. We're happy to support your participants with $50 in Appwrite Cloud Pro credits each.</p>
 
@@ -194,7 +194,7 @@ You can send this email to your participants to make it easy to start with Appwr
 
       const textBody = `Hi ${fullName},
 
-We're excited to officially sponsor ${companyName}!
+We're excited to officially sponsor ${eventName}!
 
 Thank you for providing the required details. We're happy to support your participants with $50 in Appwrite Cloud Pro credits each.
 
@@ -221,7 +221,7 @@ Happy hacking!`
       const formData = new URLSearchParams()
       formData.append('from', mailgunFromEmail)
       formData.append('to', row.email)
-      formData.append('subject', `Sponsorship opportunity for ${companyName}`)
+      formData.append('subject', `Appwrite sponsorship for ${eventName}`)
       formData.append('text', textBody)
       formData.append('html', htmlBody)
 
@@ -301,14 +301,14 @@ export const sendApprovalEmailFn = createServerFn({ method: 'POST' })
     }
 
     const fullName = `${row.firstName} ${row.lastName}`
-    const companyName = row.organizationName
+    const eventName = row.eventName
     const couponCode =
       row.couponCode ?? '(coupon code will be provided separately)'
 
     const htmlBody = `
 <p>Hi ${fullName},</p>
 
-<p>We're excited to officially sponsor ${companyName}! 🎉</p>
+<p>We're excited to officially sponsor ${eventName}! 🎉</p>
 
 <p>Thank you for providing the required details. We're happy to support your participants with $50 in Appwrite Cloud Pro credits each.</p>
 
@@ -341,7 +341,7 @@ You can send this email to your participants to make it easy to start with Appwr
 
     const textBody = `Hi ${fullName},
 
-We're excited to officially sponsor ${companyName}!
+We're excited to officially sponsor ${eventName}! 🎉
 
 Thank you for providing the required details. We're happy to support your participants with $50 in Appwrite Cloud Pro credits each.
 
@@ -368,7 +368,7 @@ Happy hacking!`
     const formData = new URLSearchParams()
     formData.append('from', mailgunFromEmail)
     formData.append('to', row.email)
-    formData.append('subject', `Sponsorship opportunity for ${companyName}`)
+    formData.append('subject', `Appwrite sponsorship for ${eventName}`)
     formData.append('text', textBody)
     formData.append('html', htmlBody)
 
