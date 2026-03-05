@@ -73,7 +73,7 @@ function Index() {
             className="text-xs text-[#3a3a3a]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            © {new Date().getFullYear()} Appwrite, Inc. All rights reserved.
+            © {new Date().getFullYear()} Appwrite. All rights reserved.
           </p>
         </div>
       </footer>
