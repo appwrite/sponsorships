@@ -1,0 +1,12 @@
+dist
+node_modules
+.env
+.nitro
+.output
+.tanstack
+.DS_Store
+.idea
+Dockerfile
+docker-compose.yml
+.github
+.git

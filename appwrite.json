@@ -1,0 +1,168 @@
+{
+  "projectId": "hackathon-sponsorships",
+  "databases": [
+    {
+      "$id": "imagine-project-db",
+      "name": "Imagine Project DB",
+      "enabled": true
+    }
+  ],
+  "collections": [
+    {
+      "$id": "sponsorship_applications",
+      "$permissions": [],
+      "databaseId": "imagine-project-db",
+      "name": "sponsorship_applications",
+      "enabled": true,
+      "documentSecurity": true,
+      "attributes": [
+        {
+          "key": "createdBy",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 64,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "firstName",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 128,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "lastName",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 128,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "email",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "format": "email",
+          "default": null
+        },
+        {
+          "key": "organizationName",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "eventName",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "eventLocation",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 512,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "eventDate",
+          "type": "datetime",
+          "required": true,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "estimatedAttendees",
+          "type": "integer",
+          "required": true,
+          "array": false,
+          "min": null,
+          "max": null,
+          "default": null
+        },
+        {
+          "key": "eventWebsite",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "format": "url",
+          "default": null
+        },
+        {
+          "key": "socialMediaHandle",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 4096,
+          "default": null,
+          "encrypt": false
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "elements": ["pending", "approved", "rejected"],
+          "format": "enum",
+          "default": null
+        },
+        {
+          "key": "couponCode",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null,
+          "encrypt": false
+        }
+      ],
+      "indexes": [
+        {
+          "key": "idx_createdBy",
+          "type": "key",
+          "status": "available",
+          "attributes": ["createdBy"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "idx_status",
+          "type": "key",
+          "status": "available",
+          "attributes": ["status"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "idx_email",
+          "type": "key",
+          "status": "available",
+          "attributes": ["email"],
+          "orders": ["ASC"]
+        }
+      ]
+    }
+  ]
+}
