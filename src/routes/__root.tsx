@@ -56,9 +56,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     const ogImageUrl = generateOGImageUrl(config, baseUrl)
 
     const metadata: OGMetaTags = {
-      title: 'Appwrite Hackathon Sponsorship',
+      title: 'Appwrite Sponsorship for Hackathons',
       description:
-        'A sponsorship application portal for Appwrite Hackathons with an admin review flow, coupon code management, and automated email notifications.',
+        'An application portal for hackathons seeking sponsorship from Appwrite',
       image: ogImageUrl,
       url: typeof window !== 'undefined' ? window.location.href : baseUrl,
     }
@@ -75,12 +75,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           content: 'width=device-width, initial-scale=1',
         },
         {
-          title: 'Appwrite Hackathon Sponsorship',
+          title: 'Appwrite Sponsorship for Hackathons',
         },
         {
           name: 'description',
           content:
-            'A sponsorship application portal for Appwrite Hackathons with an admin review flow, coupon code management, and automated email notifications via Mailgun.',
+            'An application portal for hackathons seeking sponsorship from Appwrite',
         },
         ...ogTags.meta,
       ],
