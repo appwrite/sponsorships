@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { HeroSection } from '@/components/sponsorship/hero-section'
 import { ApplicationForm } from '@/components/sponsorship/application-form'
 import { authMiddleware } from '@/server/functions/auth'
 import type { Models } from 'node-appwrite'
@@ -20,12 +19,37 @@ function Index() {
 
   return (
     <div
-      className="min-h-screen bg-[#0d0d0d]"
+      className="relative min-h-screen bg-[#19191C]"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
+      {/* Grid pattern masked by gradient */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(253,54,110,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(253,54,110,0.07) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          maskImage:
+            'radial-gradient(ellipse 60% 50% at 0% 20%, black 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 100% 90%, black 0%, transparent 60%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 60% 50% at 0% 20%, black 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 100% 90%, black 0%, transparent 60%)',
+        }}
+      />
+
+      {/* Gradient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        aria-hidden="true"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 0% 20%, rgba(253,54,110,0.14) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 100% 90%, rgba(253,54,110,0.06) 0%, transparent 60%)',
+        }}
+      />
+
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 border-b border-[#1a1a1a] bg-[#0d0d0d]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <nav className="relative z-50 border-b border-white/5">
+        <div className="mx-auto flex max-w-[1160px] items-center justify-between px-6 py-5">
           <a
             href="https://appwrite.io"
             target="_blank"
@@ -35,7 +59,7 @@ function Index() {
             <img
               src="/appwrite-logo.png"
               alt="Appwrite"
-              className="h-7 w-auto"
+              className="h-5 w-auto"
             />
           </a>
 
@@ -43,7 +67,7 @@ function Index() {
             {isAdmin && (
               <a
                 href="/admin"
-                className="rounded-lg border border-[#fd366e]/40 bg-[#fd366e]/10 px-4 py-2 text-xs font-semibold text-[#fd366e] hover:bg-[#fd366e]/20 transition-colors"
+                className="h-10 inline-flex items-center rounded-lg border border-[#fd366e]/40 bg-[#fd366e]/10 px-4 text-xs font-semibold text-[#fd366e] hover:bg-[#fd366e]/20 transition-colors"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 Admin Panel
@@ -53,24 +77,14 @@ function Index() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <HeroSection />
-
-      {/* Divider */}
-      <div className="mx-auto max-w-3xl px-6">
-        <div className="h-px bg-gradient-to-r from-transparent via-[#fd366e]/30 to-transparent" />
-      </div>
-
       {/* Application Form */}
-      <div className="pt-16">
-        <ApplicationForm />
-      </div>
+      <ApplicationForm />
 
       {/* Footer */}
       <footer className="border-t border-[#1a1a1a] py-8">
-        <div className="mx-auto max-w-6xl px-6 text-center">
+        <div className="mx-auto max-w-[1160px] px-6 text-center">
           <p
-            className="text-xs text-[#3a3a3a]"
+            className="text-xs text-[#6C6C71]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             © {new Date().getFullYear()} Appwrite. All rights reserved.

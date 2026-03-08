@@ -157,7 +157,7 @@ function ApplicationRow({ app }: { app: Application }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3 mb-1.5">
             <span
-              className="font-semibold text-white text-sm"
+              className="font-semibold text-[#E4E4E7] text-sm"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               {app.eventName}
@@ -165,7 +165,7 @@ function ApplicationRow({ app }: { app: Application }) {
             <StatusBadge status={app.status} />
           </div>
           <p
-            className="text-xs text-[#6b6b6b] truncate"
+            className="text-xs text-[#ADADB0] truncate"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             {app.firstName} {app.lastName} · {app.organizationName} ·{' '}
@@ -176,7 +176,7 @@ function ApplicationRow({ app }: { app: Application }) {
             })}
           </p>
         </div>
-        <div className="shrink-0 text-[#4a4a4a] mt-0.5">
+        <div className="shrink-0 text-[#6C6C71] mt-0.5">
           {expanded ? (
             <ChevronUp className="h-4 w-4" />
           ) : (
@@ -207,13 +207,13 @@ function ApplicationRow({ app }: { app: Application }) {
             ].map(({ label, value }) => (
               <div key={label}>
                 <p
-                  className="text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a] mb-0.5"
+                  className="text-[10px] font-semibold text-[#6C6C71] mb-0.5"
                   style={{ fontFamily: "'Sora', sans-serif" }}
                 >
                   {label}
                 </p>
                 <p
-                  className="text-sm text-[#c0c0c0] break-all"
+                  className="text-sm text-[#ADADB0] break-all"
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
                   {value}
@@ -225,13 +225,13 @@ function ApplicationRow({ app }: { app: Application }) {
           {app.message && (
             <div className="mb-5 rounded-lg border border-[#1e1e1e] bg-[#0d0d0d] p-4">
               <p
-                className="text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a] mb-1.5"
+                className="text-[10px] font-semibold text-[#6C6C71] mb-1.5"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 Message
               </p>
               <p
-                className="text-sm text-[#8a8a8a] leading-relaxed"
+                className="text-sm text-[#ADADB0] leading-relaxed"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 {app.message}
@@ -242,7 +242,7 @@ function ApplicationRow({ app }: { app: Application }) {
           {/* Coupon Code Editor */}
           <div className="mb-5">
             <label
-              className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a]"
+              className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold text-[#6C6C71]"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               <TicketCheck className="h-3 w-3" />
@@ -253,13 +253,13 @@ function ApplicationRow({ app }: { app: Application }) {
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
                 placeholder="Code or https://cloud.appwrite.io/console/apply-credit?code=…"
-                className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-[#3a3a3a] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30 font-mono"
+                className="flex-1 h-10 rounded-lg border border-[#2a2a2a] bg-[#141414] px-3 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30 font-mono"
               />
               <button
                 type="button"
                 onClick={saveCoupon}
                 disabled={mutation.isPending}
-                className="rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-xs font-semibold text-white hover:border-[#fd366e]/50 hover:text-[#fd366e] transition-colors disabled:opacity-50"
+                className="h-10 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-4 text-xs font-semibold text-[#E4E4E7] hover:border-[#3a3a3a] transition-colors disabled:opacity-50"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 Save
@@ -289,7 +289,7 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 <CheckCircle2 className="h-4 w-4" />
@@ -306,7 +306,7 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-rose-500/10 border border-rose-500/30 px-4 py-2 text-sm font-semibold text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 h-10 rounded-lg bg-rose-500/10 border border-rose-500/30 px-4 text-sm font-semibold text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 <XCircle className="h-4 w-4" />
@@ -323,7 +323,7 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-4 py-2 text-sm font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 px-4 text-sm font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors disabled:opacity-50"
                 style={{ fontFamily: "'Sora', sans-serif" }}
               >
                 <Clock className="h-4 w-4" />
@@ -372,12 +372,12 @@ export function ApplicationsTable() {
       <div className="mb-6 flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#4a4a4a]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search applications…"
-            className="w-full rounded-lg border border-[#2a2a2a] bg-[#141414] pl-9 pr-4 py-2.5 text-sm text-white placeholder-[#4a4a4a] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30"
+            className="w-full h-10 rounded-lg border border-[#2a2a2a] bg-[#141414] pl-9 pr-4 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30"
             style={{ fontFamily: "'Inter', sans-serif" }}
           />
         </div>
@@ -392,7 +392,7 @@ export function ApplicationsTable() {
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 statusFilter === s
                   ? 'bg-[#fd366e] text-white'
-                  : 'border border-[#2a2a2a] text-[#6b6b6b] hover:text-white'
+                  : 'border border-[#2a2a2a] text-[#ADADB0] hover:text-[#E4E4E7]'
               }`}
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
@@ -407,7 +407,7 @@ export function ApplicationsTable() {
           type="button"
           onClick={() => refetch()}
           disabled={isFetching}
-          className="flex items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 py-2.5 text-xs text-[#6b6b6b] hover:text-white hover:border-[#3a3a3a] transition-colors disabled:opacity-50"
+          className="h-10 flex items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 text-xs text-[#ADADB0] hover:text-[#E4E4E7] hover:border-[#3a3a3a] transition-colors disabled:opacity-50"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           <RefreshCw
@@ -434,7 +434,7 @@ export function ApplicationsTable() {
       ) : filtered.length === 0 ? (
         <div className="rounded-xl border border-[#1e1e1e] bg-[#111111] p-16 text-center">
           <p
-            className="text-sm text-[#4a4a4a]"
+            className="text-sm text-[#6C6C71]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             {data?.applications.length === 0

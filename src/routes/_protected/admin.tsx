@@ -42,7 +42,7 @@ function AdminPage() {
               <img
                 src="/appwrite-logo.png"
                 alt="Appwrite"
-                className="h-6 w-auto"
+                className="h-5 w-auto"
               />
             </Link>
 
@@ -61,14 +61,14 @@ function AdminPage() {
 
           <div className="flex items-center gap-3">
             <span
-              className="text-xs text-[#4a4a4a]"
+              className="text-xs text-[#6C6C71]"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               {currentUser.email}
             </span>
             <Link
               to="/sign-out"
-              className="rounded-lg border border-[#2a2a2a] px-4 py-2 text-xs font-medium text-[#8a8a8a] hover:text-white hover:border-[#3a3a3a] transition-colors"
+              className="h-10 inline-flex items-center rounded-lg border border-[#2a2a2a] px-4 text-xs font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-[#3a3a3a] transition-colors"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
               Sign Out
@@ -83,20 +83,20 @@ function AdminPage() {
           <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[#fd366e]/30 bg-[#fd366e]/10 px-3.5 py-1">
             <ShieldCheck className="h-3.5 w-3.5 text-[#fd366e]" />
             <span
-              className="text-xs font-semibold uppercase tracking-widest text-[#fd366e]"
+              className="text-xs font-semibold text-[#fd366e]"
               style={{ fontFamily: "'Sora', sans-serif" }}
             >
-              Admin Review Panel
+              Admin review panel
             </span>
           </div>
           <h1
-            className="mt-4 text-3xl font-bold text-white sm:text-4xl"
+            className="mt-4 text-3xl font-bold text-[#E4E4E7] sm:text-4xl"
             style={{ fontFamily: "'Sora', sans-serif" }}
           >
             Sponsorship Applications
           </h1>
           <p
-            className="mt-2 text-sm text-[#6b6b6b]"
+            className="mt-2 text-sm text-[#ADADB0]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Review, update coupon codes, and approve or reject hackathon
