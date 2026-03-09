@@ -6,7 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { createApplicationFn } from '@/server/functions/sponsorship'
-import { Loader2, CheckCircle2, ExternalLink, ChevronDown, CreditCard, Gift, BookOpen } from 'lucide-react'
+import {
+  Loader2,
+  Check,
+  ExternalLink,
+  ChevronDown,
+  CreditCard,
+  Gift,
+  BookOpen,
+} from 'lucide-react'
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -35,7 +43,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 const inputCls =
-  'w-full h-9 rounded-lg border border-white/10 bg-white/[0.06] px-4 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none transition-all focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/40'
+  'w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] px-3 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none transition-all focus:border-[#E4E4E7] focus:ring-1 focus:ring-[#E4E4E7]/30'
 const labelCls = 'block text-sm font-medium text-[#ADADB0] mb-1.5'
 const errorCls = 'mt-1 text-xs text-[#fd366e]'
 
@@ -79,26 +87,29 @@ export function ApplicationForm() {
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#fd366e]/10 border border-[#fd366e]/30">
-          <CheckCircle2 className="h-8 w-8 text-[#fd366e]" />
+      <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-6">
+        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#fd366e]/10 border border-[#fd366e]/30">
+          <Check className="h-5 w-5 text-[#fd366e]" />
         </div>
         <h2
-          className="mb-3 text-2xl font-bold text-[#E4E4E7]"
-          style={{ fontFamily: "'Sora', sans-serif" }}
+          className="mb-3 text-4xl font-normal text-[#E4E4E7]"
+          style={{
+            fontFamily: "'Inter Tight', 'Sora', sans-serif",
+            letterSpacing: '-0.022em',
+          }}
         >
-          Application Received!
+          Application received
         </h2>
         <p
           className="mb-8 max-w-md text-sm text-[#ADADB0] leading-relaxed"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Thank you for applying for Appwrite sponsorship. Our team will review
-          your application and get back to you via email soon.
+          your application and get back to you via email.
         </p>
         <button
           onClick={() => setSubmitted(false)}
-          className="h-10 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-5 text-sm font-medium text-[#E4E4E7] hover:border-[#3a3a3a] transition-colors"
+          className="h-9 rounded-lg border border-white/10 px-5 text-sm font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Submit another application
@@ -108,29 +119,35 @@ export function ApplicationForm() {
   }
 
   return (
-    <section id="apply" className="bg-[#19191C] pt-28 pb-24">
+    <section id="apply" className="w-full py-10 sm:py-16">
       <div className="mx-auto max-w-[1160px] px-6">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_1.4fr] items-start">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.4fr] items-start">
           {/* Left column — hero + benefits */}
           <div>
             <h1
               className="mb-5 text-4xl font-normal text-[#E4E4E7] sm:text-5xl"
-              style={{ fontFamily: "'Inter Tight', 'Sora', sans-serif", letterSpacing: '-0.022em', lineHeight: 1.15 }}
+              style={{
+                fontFamily: "'Inter Tight', 'Sora', sans-serif",
+                letterSpacing: '-0.022em',
+                lineHeight: 1.15,
+              }}
             >
-              Hosting an event{' '}
-              <br className="hidden sm:block" />
+              Hosting an event <br className="hidden sm:block" />
               or hackathon?
             </h1>
             <p
-              className="mb-8 max-w-sm text-base text-[#ADADB0] leading-relaxed"
-              style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '-0.014em' }}
+              className="mb-6 max-w-sm text-sm text-[#ADADB0] leading-relaxed"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: '-0.014em',
+              }}
             >
-              Apply for an Appwrite sponsorship and empower every
-              attendee to build with Appwrite Pro.
+              Apply for an Appwrite sponsorship and empower every attendee to
+              build with Appwrite Pro.
             </p>
 
             {/* What you get */}
-            <div className="mb-8 flex flex-col gap-4">
+            <div className="mb-6 flex flex-col gap-5">
               {[
                 {
                   icon: <CreditCard className="h-5 w-5 text-[#fd366e]" />,
@@ -160,7 +177,7 @@ export function ApplicationForm() {
                       {item.title}
                     </p>
                     <p
-                      className="text-xs text-[#6C6C71] mt-0.5"
+                      className="text-xs text-[#ADADB0] mt-0.5"
                       style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                       {item.desc}
@@ -171,13 +188,13 @@ export function ApplicationForm() {
             </div>
 
             {/* Social proof */}
-            <div className="border-t border-white/5 pt-6">
+            <div className="border-t border-white/5 pt-5">
               <p
                 className="text-sm text-[#ADADB0]"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
-                Trusted by <strong className="text-[#E4E4E7]">200+</strong> hackathons
-                and developer events worldwide
+                Trusted by <strong className="text-[#E4E4E7]">200+</strong>{' '}
+                hackathons and developer events worldwide
               </p>
             </div>
           </div>
@@ -189,10 +206,11 @@ export function ApplicationForm() {
             className="flex flex-col gap-6"
           >
             {/* Name row */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
                 <label htmlFor="firstName" className={labelCls}>
-                  First Name                </label>
+                  First Name{' '}
+                </label>
                 <input
                   id="firstName"
                   {...register('firstName')}
@@ -206,7 +224,8 @@ export function ApplicationForm() {
               </div>
               <div>
                 <label htmlFor="lastName" className={labelCls}>
-                  Last Name                </label>
+                  Last Name{' '}
+                </label>
                 <input
                   id="lastName"
                   {...register('lastName')}
@@ -223,7 +242,8 @@ export function ApplicationForm() {
             {/* Email */}
             <div>
               <label htmlFor="email" className={labelCls}>
-                Email Address              </label>
+                Email Address{' '}
+              </label>
               <input
                 id="email"
                 type="email"
@@ -241,11 +261,11 @@ export function ApplicationForm() {
             <div>
               <label htmlFor="organizationName" className={labelCls}>
                 Organization / Community Name{' '}
-                             </label>
+              </label>
               <input
                 id="organizationName"
                 {...register('organizationName')}
-                placeholder="Scorpion"
+                placeholder="Acme Hackers"
                 className={inputCls}
                 style={{ fontFamily: "'Inter', sans-serif" }}
               />
@@ -257,7 +277,8 @@ export function ApplicationForm() {
             {/* Event Name */}
             <div>
               <label htmlFor="eventName" className={labelCls}>
-                Event Name              </label>
+                Event Name{' '}
+              </label>
               <input
                 id="eventName"
                 {...register('eventName')}
@@ -271,10 +292,11 @@ export function ApplicationForm() {
             </div>
 
             {/* Location + Date row */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
                 <label htmlFor="eventLocation" className={labelCls}>
-                  Event Location                </label>
+                  Event Location{' '}
+                </label>
                 <input
                   id="eventLocation"
                   {...register('eventLocation')}
@@ -288,7 +310,8 @@ export function ApplicationForm() {
               </div>
               <div>
                 <label htmlFor="eventDate" className={labelCls}>
-                  Event Date                </label>
+                  Event Date{' '}
+                </label>
                 <input
                   id="eventDate"
                   type="date"
@@ -305,7 +328,8 @@ export function ApplicationForm() {
             {/* Estimated Attendees */}
             <div>
               <label htmlFor="estimatedAttendees" className={labelCls}>
-                Estimated Attendees              </label>
+                Estimated Attendees{' '}
+              </label>
               <input
                 id="estimatedAttendees"
                 type="number"
@@ -316,9 +340,7 @@ export function ApplicationForm() {
                 style={{ fontFamily: "'Inter', sans-serif" }}
               />
               {errors.estimatedAttendees && (
-                <p className={errorCls}>
-                  {errors.estimatedAttendees.message}
-                </p>
+                <p className={errorCls}>{errors.estimatedAttendees.message}</p>
               )}
             </div>
 
@@ -358,7 +380,9 @@ export function ApplicationForm() {
                         <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
                       </div>
                       {errors.eventWebsite && (
-                        <p className={errorCls}>{errors.eventWebsite.message}</p>
+                        <p className={errorCls}>
+                          {errors.eventWebsite.message}
+                        </p>
                       )}
                     </div>
 
@@ -371,7 +395,7 @@ export function ApplicationForm() {
                         id="socialMediaHandle"
                         {...register('socialMediaHandle')}
                         rows={2}
-                        placeholder="e.g. @hackfest on Twitter, https://instagram.com/hackfest"
+                        placeholder="@hackfest on X, linkedin.com/company/hackfest"
                         className={`${inputCls} h-auto py-3 resize-none`}
                         style={{ fontFamily: "'Inter', sans-serif" }}
                       />
@@ -386,7 +410,7 @@ export function ApplicationForm() {
                         id="message"
                         {...register('message')}
                         rows={4}
-                        placeholder="Tell us a bit more about your event, your community, or anything else you'd like us to know..."
+                        placeholder="Anything else you'd like us to know about your event..."
                         className={`${inputCls} h-auto py-3 resize-none`}
                         style={{ fontFamily: "'Inter', sans-serif" }}
                       />
@@ -402,7 +426,7 @@ export function ApplicationForm() {
             {/* Submit row */}
             <div className="flex items-center justify-between gap-4">
               <p
-                className="text-xs text-[#6C6C71]"
+                className="text-xs text-[#ADADB0]"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 By submitting, you agree to Appwrite's{' '}

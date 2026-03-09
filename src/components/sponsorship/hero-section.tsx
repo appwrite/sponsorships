@@ -17,7 +17,11 @@ export function HeroSection() {
         {/* Heading */}
         <h1
           className="mb-6 text-4xl font-normal text-[#E4E4E7] sm:text-5xl md:text-6xl"
-          style={{ fontFamily: "'Inter Tight', 'Sora', sans-serif", letterSpacing: '-0.022em', lineHeight: 1.15 }}
+          style={{
+            fontFamily: "'Inter Tight', 'Sora', sans-serif",
+            letterSpacing: '-0.022em',
+            lineHeight: 1.15,
+          }}
         >
           Hosting an event <br className="hidden sm:block" />
           or hackathon?
@@ -26,7 +30,11 @@ export function HeroSection() {
         {/* Subtitle */}
         <p
           className="mx-auto mb-10 max-w-2xl text-base text-[#ADADB0] sm:text-lg"
-          style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '-0.014em', lineHeight: 1.5 }}
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            letterSpacing: '-0.014em',
+            lineHeight: 1.5,
+          }}
         >
           Apply for an Appwrite sponsorship and get{' '}
           <strong className="text-[#E4E4E7]">$50 Cloud credits</strong> for all
@@ -53,7 +61,10 @@ export function HeroSection() {
               <div className="flex-1 text-center">
                 <p
                   className="text-3xl font-bold text-[#E4E4E7]"
-                  style={{ fontFamily: "'Sora', sans-serif", letterSpacing: '-0.01em' }}
+                  style={{
+                    fontFamily: "'Sora', sans-serif",
+                    letterSpacing: '-0.01em',
+                  }}
                 >
                   {stat.value}
                 </p>
@@ -65,7 +76,10 @@ export function HeroSection() {
                 </p>
               </div>
               {i < 2 && (
-                <div className="h-8 w-px bg-[#2a2a2a] shrink-0" aria-hidden="true" />
+                <div
+                  className="h-8 w-px bg-[#2a2a2a] shrink-0"
+                  aria-hidden="true"
+                />
               )}
             </Fragment>
           ))}
