@@ -36,7 +36,21 @@ const formSchema = z.object({
     .url('Must be a valid URL')
     .optional()
     .or(z.literal('')),
-  socialMediaHandle: z.string().optional(),
+  linkedinUrl: z
+    .string()
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  xUrl: z
+    .string()
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
+  instagramUrl: z
+    .string()
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')),
   message: z.string().optional(),
 })
 
@@ -73,7 +87,9 @@ export function ApplicationForm() {
           eventDate: values.eventDate,
           estimatedAttendees: Number(values.estimatedAttendees),
           eventWebsite: values.eventWebsite || null,
-          socialMediaHandle: values.socialMediaHandle || null,
+          linkedinUrl: values.linkedinUrl || null,
+          xUrl: values.xUrl || null,
+          instagramUrl: values.instagramUrl || null,
           message: values.message || null,
         },
       })
@@ -344,6 +360,27 @@ export function ApplicationForm() {
               )}
             </div>
 
+            {/* Event Website */}
+            <div>
+              <label htmlFor="eventWebsite" className={labelCls}>
+                Event Website
+              </label>
+              <div className="relative">
+                <input
+                  id="eventWebsite"
+                  type="url"
+                  {...register('eventWebsite')}
+                  placeholder="https://hackfest.dev"
+                  className={`${inputCls} pr-10`}
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                />
+                <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
+              </div>
+              {errors.eventWebsite && (
+                <p className={errorCls}>{errors.eventWebsite.message}</p>
+              )}
+            </div>
+
             {/* Optional fields accordion */}
             <div className="rounded-lg border border-white/5 bg-white/[0.02]">
               <button
@@ -363,42 +400,67 @@ export function ApplicationForm() {
               >
                 <div className="overflow-hidden">
                   <div className="flex flex-col gap-6 px-4 pb-4">
-                    {/* Event Website */}
+                    {/* LinkedIn */}
                     <div>
-                      <label htmlFor="eventWebsite" className={labelCls}>
-                        Event Website
+                      <label htmlFor="linkedinUrl" className={labelCls}>
+                        LinkedIn URL
                       </label>
                       <div className="relative">
                         <input
-                          id="eventWebsite"
+                          id="linkedinUrl"
                           type="url"
-                          {...register('eventWebsite')}
-                          placeholder="https://hackfest.dev"
+                          {...register('linkedinUrl')}
+                          placeholder="https://linkedin.com/company/hackfest"
                           className={`${inputCls} pr-10`}
                           style={{ fontFamily: "'Inter', sans-serif" }}
                         />
                         <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
                       </div>
-                      {errors.eventWebsite && (
-                        <p className={errorCls}>
-                          {errors.eventWebsite.message}
-                        </p>
+                      {errors.linkedinUrl && (
+                        <p className={errorCls}>{errors.linkedinUrl.message}</p>
                       )}
                     </div>
 
-                    {/* Social Media */}
+                    {/* X (Twitter) */}
                     <div>
-                      <label htmlFor="socialMediaHandle" className={labelCls}>
-                        Social Media Links
+                      <label htmlFor="xUrl" className={labelCls}>
+                        X (Twitter) URL
                       </label>
-                      <textarea
-                        id="socialMediaHandle"
-                        {...register('socialMediaHandle')}
-                        rows={2}
-                        placeholder="@hackfest on X, linkedin.com/company/hackfest"
-                        className={`${inputCls} h-auto py-3 resize-none`}
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                      />
+                      <div className="relative">
+                        <input
+                          id="xUrl"
+                          type="url"
+                          {...register('xUrl')}
+                          placeholder="https://x.com/hackfest"
+                          className={`${inputCls} pr-10`}
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        />
+                        <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
+                      </div>
+                      {errors.xUrl && (
+                        <p className={errorCls}>{errors.xUrl.message}</p>
+                      )}
+                    </div>
+
+                    {/* Instagram */}
+                    <div>
+                      <label htmlFor="instagramUrl" className={labelCls}>
+                        Instagram URL
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="instagramUrl"
+                          type="url"
+                          {...register('instagramUrl')}
+                          placeholder="https://instagram.com/hackfest"
+                          className={`${inputCls} pr-10`}
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        />
+                        <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
+                      </div>
+                      {errors.instagramUrl && (
+                        <p className={errorCls}>{errors.instagramUrl.message}</p>
+                      )}
                     </div>
 
                     {/* Message */}

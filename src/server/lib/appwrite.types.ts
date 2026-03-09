@@ -17,7 +17,9 @@ export type SponsorshipApplications = Models.Row & {
   eventDate: string
   estimatedAttendees: number
   eventWebsite: string | null
-  socialMediaHandle: string | null
+  linkedinUrl: string | null
+  xUrl: string | null
+  instagramUrl: string | null
   message: string | null
   status: Status
   couponCode: string | null

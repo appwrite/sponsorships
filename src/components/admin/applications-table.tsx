@@ -26,7 +26,9 @@ type Application = {
   eventDate: string
   estimatedAttendees: number
   eventWebsite: string | null
-  socialMediaHandle: string | null
+  linkedinUrl: string | null
+  xUrl: string | null
+  instagramUrl: string | null
   message: string | null
   status: string
   couponCode: string | null
@@ -168,7 +170,9 @@ function ApplicationRow({ app }: { app: Application }) {
               { label: 'Location', value: app.eventLocation },
               { label: 'Attendees', value: app.estimatedAttendees.toString() },
               { label: 'Website', value: app.eventWebsite ?? '—' },
-              { label: 'Social', value: app.socialMediaHandle ?? '—' },
+              { label: 'LinkedIn', value: app.linkedinUrl ?? '—' },
+              { label: 'X', value: app.xUrl ?? '—' },
+              { label: 'Instagram', value: app.instagramUrl ?? '—' },
               {
                 label: 'Submitted',
                 value: new Date(app.createdAt).toLocaleDateString('en-US', {

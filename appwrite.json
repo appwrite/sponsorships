@@ -91,12 +91,20 @@
           "type": "integer",
           "required": true,
           "array": false,
-          "min": null,
-          "max": null,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
           "default": null
         },
         {
           "key": "eventWebsite",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "format": "url",
+          "default": null
+        },
+        {
+          "key": "linkedinUrl",
           "type": "string",
           "required": false,
           "array": false,
@@ -104,13 +112,20 @@
           "default": null
         },
         {
-          "key": "socialMediaHandle",
+          "key": "xUrl",
           "type": "string",
           "required": false,
           "array": false,
-          "size": 255,
-          "default": null,
-          "encrypt": false
+          "format": "url",
+          "default": null
+        },
+        {
+          "key": "instagramUrl",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "format": "url",
+          "default": null
         },
         {
           "key": "message",
