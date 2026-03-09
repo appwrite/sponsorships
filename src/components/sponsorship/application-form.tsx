@@ -233,6 +233,7 @@ export function ApplicationForm() {
                   placeholder="Walter"
                   className={inputCls}
                   style={{ fontFamily: "'Inter', sans-serif" }}
+                  required
                 />
                 {errors.firstName && (
                   <p className={errorCls}>{errors.firstName.message}</p>
@@ -248,6 +249,7 @@ export function ApplicationForm() {
                   placeholder="O'Brien"
                   className={inputCls}
                   style={{ fontFamily: "'Inter', sans-serif" }}
+                  required
                 />
                 {errors.lastName && (
                   <p className={errorCls}>{errors.lastName.message}</p>
@@ -267,6 +269,7 @@ export function ApplicationForm() {
                 placeholder="walter@example.com"
                 className={inputCls}
                 style={{ fontFamily: "'Inter', sans-serif" }}
+                required
               />
               {errors.email && (
                 <p className={errorCls}>{errors.email.message}</p>
@@ -284,6 +287,7 @@ export function ApplicationForm() {
                 placeholder="Acme Hackers"
                 className={inputCls}
                 style={{ fontFamily: "'Inter', sans-serif" }}
+                required
               />
               {errors.organizationName && (
                 <p className={errorCls}>{errors.organizationName.message}</p>
@@ -301,6 +305,7 @@ export function ApplicationForm() {
                 placeholder="HackFest 2025"
                 className={inputCls}
                 style={{ fontFamily: "'Inter', sans-serif" }}
+                required
               />
               {errors.eventName && (
                 <p className={errorCls}>{errors.eventName.message}</p>
@@ -319,6 +324,7 @@ export function ApplicationForm() {
                   placeholder="San Francisco, CA / Online"
                   className={inputCls}
                   style={{ fontFamily: "'Inter', sans-serif" }}
+                  required
                 />
                 {errors.eventLocation && (
                   <p className={errorCls}>{errors.eventLocation.message}</p>
@@ -334,6 +340,7 @@ export function ApplicationForm() {
                   {...register('eventDate')}
                   className={`${inputCls} [color-scheme:dark]`}
                   style={{ fontFamily: "'Inter', sans-serif" }}
+                  required
                 />
                 {errors.eventDate && (
                   <p className={errorCls}>{errors.eventDate.message}</p>
@@ -354,6 +361,7 @@ export function ApplicationForm() {
                 placeholder="150"
                 className={inputCls}
                 style={{ fontFamily: "'Inter', sans-serif" }}
+                required
               />
               {errors.estimatedAttendees && (
                 <p className={errorCls}>{errors.estimatedAttendees.message}</p>
@@ -373,6 +381,7 @@ export function ApplicationForm() {
                   placeholder="https://hackfest.dev"
                   className={`${inputCls} pr-10`}
                   style={{ fontFamily: "'Inter', sans-serif" }}
+                  required
                 />
                 <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
               </div>
@@ -466,7 +475,7 @@ export function ApplicationForm() {
                     {/* Message */}
                     <div>
                       <label htmlFor="message" className={labelCls}>
-                        Your message
+                        Any comments?
                       </label>
                       <textarea
                         id="message"
