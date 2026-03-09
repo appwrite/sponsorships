@@ -8,12 +8,8 @@ import {
   updateApplicationFn,
 } from '@/server/functions/sponsorship'
 import {
-  CheckCircle2,
-  XCircle,
-  Clock,
   ChevronDown,
   ChevronUp,
-  TicketCheck,
   Search,
   RefreshCw,
   ExternalLink,
@@ -66,35 +62,18 @@ function isBareCode(value: string): boolean {
   }
 }
 
-const statusColors: Record<
-  string,
-  { bg: string; text: string; icon: React.ReactNode }
-> = {
-  pending: {
-    bg: 'bg-amber-500/10 border-amber-500/30',
-    text: 'text-amber-400',
-    icon: <Clock className="h-3.5 w-3.5" />,
-  },
-  approved: {
-    bg: 'bg-emerald-500/10 border-emerald-500/30',
-    text: 'text-emerald-400',
-    icon: <CheckCircle2 className="h-3.5 w-3.5" />,
-  },
-  rejected: {
-    bg: 'bg-rose-500/10 border-rose-500/30',
-    text: 'text-rose-400',
-    icon: <XCircle className="h-3.5 w-3.5" />,
-  },
+const statusStyles: Record<string, { bg: string; text: string }> = {
+  pending: { bg: 'bg-[#98593E]/[0.24]', text: 'text-[#FE9567]' },
+  approved: { bg: 'bg-[#0A714F]/[0.24]', text: 'text-[#10B981]' },
+  rejected: { bg: 'bg-[#7F1D1D]/[0.24]', text: 'text-[#F87171]' },
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const s = statusColors[status] ?? statusColors.pending
+  const s = statusStyles[status] ?? statusStyles.pending
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${s.bg} ${s.text}`}
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${s.bg} ${s.text}`}
     >
-      {s.icon}
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   )
@@ -127,7 +106,7 @@ function ApplicationRow({ app }: { app: Application }) {
     onSuccess: (_, vars) => {
       void queryClient.invalidateQueries({ queryKey: ['applications'] })
       if (vars.status === 'approved') {
-        toast.success(`✅ Approved & approval email sent to ${app.email}`)
+        toast.success(`Approved & approval email sent to ${app.email}`)
       } else if (vars.status === 'rejected') {
         toast.success(`Application rejected.`)
       } else {
@@ -147,27 +126,21 @@ function ApplicationRow({ app }: { app: Application }) {
   }
 
   return (
-    <div className="rounded-xl border border-[#1e1e1e] bg-[#111111] transition-colors hover:border-[#2a2a2a]">
+    <div className="rounded-xl border border-white/5 bg-white/[0.02] transition-colors hover:border-white/10">
       {/* Collapsed header */}
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-start justify-between gap-4 p-5 text-left"
+        className="flex w-full items-start justify-between gap-4 p-4 sm:p-5 text-left"
       >
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-3 mb-1.5">
-            <span
-              className="font-semibold text-white text-sm"
-              style={{ fontFamily: "'Sora', sans-serif" }}
-            >
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="font-medium text-[#E4E4E7] text-sm">
               {app.eventName}
             </span>
             <StatusBadge status={app.status} />
           </div>
-          <p
-            className="text-xs text-[#6b6b6b] truncate"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
+          <p className="text-xs text-[#ADADB0] truncate">
             {app.firstName} {app.lastName} · {app.organizationName} ·{' '}
             {new Date(app.eventDate).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -176,7 +149,7 @@ function ApplicationRow({ app }: { app: Application }) {
             })}
           </p>
         </div>
-        <div className="shrink-0 text-[#4a4a4a] mt-0.5">
+        <div className="shrink-0 text-[#6C6C71] mt-0.5">
           {expanded ? (
             <ChevronUp className="h-4 w-4" />
           ) : (
@@ -187,9 +160,9 @@ function ApplicationRow({ app }: { app: Application }) {
 
       {/* Expanded detail panel */}
       {expanded && (
-        <div className="border-t border-[#1e1e1e] px-5 pb-5 pt-4">
+        <div className="border-t border-white/5 px-4 sm:px-5 pb-4 sm:pb-5 pt-4">
           {/* Info grid */}
-          <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="mb-5 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             {[
               { label: 'Email', value: app.email },
               { label: 'Location', value: app.eventLocation },
@@ -206,71 +179,52 @@ function ApplicationRow({ app }: { app: Application }) {
               },
             ].map(({ label, value }) => (
               <div key={label}>
-                <p
-                  className="text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a] mb-0.5"
-                  style={{ fontFamily: "'Sora', sans-serif" }}
-                >
+                <p className="text-xs font-medium text-[#ADADB0] mb-1">
                   {label}
                 </p>
-                <p
-                  className="text-sm text-[#c0c0c0] break-all"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {value}
-                </p>
+                <p className="text-sm text-[#E4E4E7] break-all">{value}</p>
               </div>
             ))}
           </div>
 
           {app.message && (
-            <div className="mb-5 rounded-lg border border-[#1e1e1e] bg-[#0d0d0d] p-4">
-              <p
-                className="text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a] mb-1.5"
-                style={{ fontFamily: "'Sora', sans-serif" }}
-              >
+            <div className="mb-5 rounded-lg border border-white/5 bg-white/[0.02] p-4">
+              <p className="text-xs font-medium text-[#ADADB0] mb-1.5">
                 Message
               </p>
-              <p
-                className="text-sm text-[#8a8a8a] leading-relaxed"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
+              <p className="text-sm text-[#E4E4E7] leading-relaxed">
                 {app.message}
               </p>
             </div>
           )}
 
           {/* Coupon Code Editor */}
-          <div className="mb-5">
-            <label
-              className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#4a4a4a]"
-              style={{ fontFamily: "'Sora', sans-serif" }}
-            >
-              <TicketCheck className="h-3 w-3" />
-              Coupon Code / URL
+          <div className="mb-6">
+            <label className="mb-1.5 block text-xs font-medium text-[#ADADB0]">
+              Coupon code / URL
             </label>
             <div className="flex gap-2">
               <input
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
                 placeholder="Code or https://cloud.appwrite.io/console/apply-credit?code=…"
-                className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#141414] px-3 py-2 text-sm text-white placeholder-[#3a3a3a] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30 font-mono"
+                className="flex-1 h-9 rounded-lg border border-white/5 bg-white/[0.02] px-3 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none focus:border-[#E4E4E7] focus:ring-1 focus:ring-[#E4E4E7]/30 font-mono"
               />
               <button
                 type="button"
                 onClick={saveCoupon}
                 disabled={mutation.isPending}
-                className="rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-xs font-semibold text-white hover:border-[#fd366e]/50 hover:text-[#fd366e] transition-colors disabled:opacity-50"
-                style={{ fontFamily: "'Sora', sans-serif" }}
+                className="h-9 rounded-lg border border-white/10 px-4 text-xs font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50"
               >
                 Save
               </button>
             </div>
             {/* Preview resolved URL when a bare code is entered */}
             {isBareCode(coupon) && (
-              <p className="mt-1.5 flex items-center gap-1 text-[11px] text-[#fd366e]/70 font-mono break-all">
+              <p className="mt-1.5 flex items-center gap-1 text-[11px] text-[#ADADB0] font-mono break-all">
                 <ExternalLink className="h-3 w-3 shrink-0" />
                 Will be saved as:{' '}
-                <span className="text-[#fd366e]">
+                <span className="text-[#E4E4E7]">
                   {normalizeCoupon(coupon)}
                 </span>
               </p>
@@ -278,7 +232,7 @@ function ApplicationRow({ app }: { app: Application }) {
           </div>
 
           {/* Action buttons */}
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex flex-wrap gap-2.5 pt-5 border-t border-white/5">
             {app.status !== 'approved' && (
               <button
                 type="button"
@@ -289,11 +243,9 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
-                style={{ fontFamily: "'Sora', sans-serif" }}
+                className="h-9 rounded-lg bg-[#fd366e] px-4 text-sm font-medium text-white hover:bg-[#fd366e]/90 transition-colors disabled:opacity-50"
               >
-                <CheckCircle2 className="h-4 w-4" />
-                Approve & Send Email
+                Approve
               </button>
             )}
             {app.status !== 'rejected' && (
@@ -306,10 +258,8 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-rose-500/10 border border-rose-500/30 px-4 py-2 text-sm font-semibold text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
-                style={{ fontFamily: "'Sora', sans-serif" }}
+                className="h-9 rounded-lg border border-white/10 px-4 text-sm font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50"
               >
-                <XCircle className="h-4 w-4" />
                 Reject
               </button>
             )}
@@ -323,11 +273,9 @@ function ApplicationRow({ app }: { app: Application }) {
                     couponCode: coupon || null,
                   })
                 }
-                className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-4 py-2 text-sm font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors disabled:opacity-50"
-                style={{ fontFamily: "'Sora', sans-serif" }}
+                className="h-9 rounded-lg border border-white/10 px-4 text-sm font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50"
               >
-                <Clock className="h-4 w-4" />
-                Reset to Pending
+                Reset to pending
               </button>
             )}
           </div>
@@ -368,47 +316,22 @@ export function ApplicationsTable() {
 
   return (
     <div>
-      {/* Filters bar */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        {/* Search */}
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#4a4a4a]" />
+      {/* Search + Refresh */}
+      <div className="mb-4 flex items-center gap-2 sm:gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search applications…"
-            className="w-full rounded-lg border border-[#2a2a2a] bg-[#141414] pl-9 pr-4 py-2.5 text-sm text-white placeholder-[#4a4a4a] outline-none focus:border-[#fd366e] focus:ring-1 focus:ring-[#fd366e]/30"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] pl-9 pr-4 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none focus:border-[#E4E4E7] focus:ring-1 focus:ring-[#E4E4E7]/30"
           />
         </div>
-
-        {/* Status pills */}
-        <div className="flex items-center gap-1.5">
-          {(['all', 'pending', 'approved', 'rejected'] as const).map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setStatusFilter(s)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                statusFilter === s
-                  ? 'bg-[#fd366e] text-white'
-                  : 'border border-[#2a2a2a] text-[#6b6b6b] hover:text-white'
-              }`}
-              style={{ fontFamily: "'Sora', sans-serif" }}
-            >
-              {s.charAt(0).toUpperCase() + s.slice(1)}{' '}
-              <span className="opacity-70">({counts[s]})</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Refresh */}
         <button
           type="button"
           onClick={() => refetch()}
           disabled={isFetching}
-          className="flex items-center gap-1.5 rounded-lg border border-[#2a2a2a] px-3 py-2.5 text-xs text-[#6b6b6b] hover:text-white hover:border-[#3a3a3a] transition-colors disabled:opacity-50"
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="h-9 flex items-center gap-1.5 rounded-lg border border-white/10 px-3 text-xs font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50"
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`}
@@ -417,26 +340,39 @@ export function ApplicationsTable() {
         </button>
       </div>
 
+      {/* Status pills */}
+      <div className="mb-5 flex flex-wrap items-center gap-1.5">
+        {(['all', 'pending', 'approved', 'rejected'] as const).map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setStatusFilter(s)}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              statusFilter === s
+                ? 'bg-white text-[#19191C]'
+                : 'border border-white/10 text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20'
+            }`}
+          >
+            {s.charAt(0).toUpperCase() + s.slice(1)}{' '}
+            <span className="opacity-70">({counts[s]})</span>
+          </button>
+        ))}
+      </div>
+
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
           <RefreshCw className="h-6 w-6 animate-spin text-[#fd366e]" />
         </div>
       ) : isError ? (
-        <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-8 text-center">
-          <p
-            className="text-sm text-rose-400"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
+        <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8 text-center">
+          <p className="text-sm text-[#ADADB0]">
             Failed to load applications. Make sure you have admin access.
           </p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-[#1e1e1e] bg-[#111111] p-16 text-center">
-          <p
-            className="text-sm text-[#4a4a4a]"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
+        <div className="rounded-xl border border-white/5 bg-white/[0.02] p-16 text-center">
+          <p className="text-sm text-[#ADADB0]">
             {data?.applications.length === 0
               ? 'No applications yet. Share the form link to start receiving applications.'
               : 'No applications match your filter.'}

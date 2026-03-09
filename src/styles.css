@@ -6,7 +6,12 @@
 
 body {
   @apply m-0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -132,5 +137,9 @@ code {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  ::selection {
+    background-color: #85dbd8;
+    color: #2d2d31;
   }
 }
