@@ -39,6 +39,7 @@ cp .env.example .env
 | `MAILGUN_API_KEY` | Mailgun API key for sending emails |
 | `MAILGUN_DOMAIN` | Mailgun sending domain |
 | `MAILGUN_FROM_EMAIL` | From address used in outgoing emails |
+| `GROWTH_ENDPOINT` | Base URL for the Appwrite growth API |
 
 ## Appwrite Setup
 
