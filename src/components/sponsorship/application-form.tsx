@@ -12,7 +12,7 @@ import {
   ExternalLink,
   ChevronDown,
   CreditCard,
-  Gift,
+  Users,
   BookOpen,
 } from 'lucide-react'
 
@@ -171,14 +171,14 @@ export function ApplicationForm() {
                   desc: 'Per attendee, 30 days validity',
                 },
                 {
-                  icon: <Gift className="h-5 w-5 text-[#fd366e]" />,
-                  title: 'Appwrite swag',
-                  desc: 'Stickers and goodies for your event',
+                  icon: <Users className="h-5 w-5 text-[#fd366e]" />,
+                  title: 'Community support',
+                  desc: 'Access to Appwrite Discord and community forums',
                 },
                 {
                   icon: <BookOpen className="h-5 w-5 text-[#fd366e]" />,
-                  title: '100+ open-source projects',
-                  desc: 'Templates and starters to inspire builders',
+                  title: 'Open-source templates',
+                  desc: 'Starters and projects to inspire builders',
                 },
               ].map((item) => (
                 <div key={item.title} className="flex gap-3">
