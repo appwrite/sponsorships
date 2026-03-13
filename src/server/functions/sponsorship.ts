@@ -70,6 +70,38 @@ export const createApplicationFn = createServerFn({ method: 'POST' })
       permissions: [],
     })
 
+    // Ping growth API with the application details, but don't block on it or fail the request if it errors
+    try {
+      const socialHandles = [
+        data.linkedinUrl,
+        data.xUrl,
+        data.instagramUrl,
+      ]
+        .filter(Boolean)
+        .join('\n')
+
+      const growthEndpoint = process.env.GROWTH_ENDPOINT
+      if (!growthEndpoint) throw new Error('GROWTH_ENDPOINT is not configured')
+
+      await fetch(`${growthEndpoint}/v1/feedback/sponsorships`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: payload.email,
+          subject: 'Event Sponsorship Application',
+          eventName: payload.eventName,
+          eventDate: payload.eventDate,
+          eventType: payload.eventLocation,
+          name: `${payload.firstName} ${payload.lastName}`,
+          socialHandles: socialHandles || undefined,
+          estimatedAttendees: payload.estimatedAttendees,
+          eventPublicWebLink: payload.eventWebsite ?? undefined,
+        }),
+      })
+    } catch (err) {
+      console.error('Failed to ping growth API:', err)
+    }
+
     return {
       application: {
         id: row.$id,
