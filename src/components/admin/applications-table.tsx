@@ -208,7 +208,7 @@ function ApplicationRow({ app }: { app: Application }) {
               <p className="text-xs font-medium text-[#ADADB0] mb-1.5">
                 Message
               </p>
-              <p className="text-sm text-[#E4E4E7] leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-[#E4E4E7] leading-relaxed whitespace-pre-wrap break-words">
                 {app.message}
               </p>
             </div>
