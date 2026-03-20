@@ -136,20 +136,22 @@ function ApplicationRow({ app }: { app: Application }) {
         className="flex w-full items-start justify-between gap-4 p-4 sm:p-5 text-left"
       >
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-medium text-[#E4E4E7] text-sm">
               {app.eventName}
             </span>
             <StatusBadge status={app.status} />
           </div>
-          <p className="text-xs text-[#ADADB0] truncate">
-            {app.firstName} {app.lastName} · {app.organizationName} ·{' '}
-            {new Date(app.eventDate).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </p>
+          {!expanded && (
+            <p className="text-xs text-[#ADADB0] truncate mt-2">
+              {app.firstName} {app.lastName} · {app.organizationName} ·{' '}
+              {new Date(app.eventDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </p>
+          )}
         </div>
         <div className="shrink-0 text-[#6C6C71] mt-0.5">
           {expanded ? (
@@ -166,6 +168,16 @@ function ApplicationRow({ app }: { app: Application }) {
           {/* Info grid */}
           <div className="mb-5 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             {[
+              { label: 'Name', value: `${app.firstName} ${app.lastName}` },
+              { label: 'Organization', value: app.organizationName },
+              {
+                label: 'Event Date',
+                value: new Date(app.eventDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                }),
+              },
               { label: 'Email', value: app.email },
               { label: 'Location', value: app.eventLocation },
               { label: 'Attendees', value: app.estimatedAttendees.toString() },
@@ -196,7 +208,7 @@ function ApplicationRow({ app }: { app: Application }) {
               <p className="text-xs font-medium text-[#ADADB0] mb-1.5">
                 Message
               </p>
-              <p className="text-sm text-[#E4E4E7] leading-relaxed">
+              <p className="text-sm text-[#E4E4E7] leading-relaxed whitespace-pre-wrap break-words">
                 {app.message}
               </p>
             </div>
