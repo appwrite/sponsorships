@@ -7,7 +7,7 @@ A web app for managing Appwrite event sponsorship applications. Organizers apply
 - **Public application form** – Organizers submit event details, estimated attendance, and optional social media links
 - **Admin panel** (`/admin`) – Review all applications, update coupon codes, and approve or reject submissions
 - **Auth** – Sign up, sign in, sign out, password recovery, and reset flows
-- **Email notifications** – Approvals automatically send an email to the applicant via Mailgun
+- **Email notifications** – Approvals automatically send an email to the applicant via Resend
 
 ## Getting Started
 
@@ -35,10 +35,8 @@ cp .env.example .env
 | `VITE_APPWRITE_ENDPOINT` | Client-side Appwrite endpoint |
 | `VITE_APPWRITE_PROJECT_ID` | Appwrite project ID (client-side) |
 | `VITE_APPWRITE_DB_ID` | Appwrite database ID (client-side) |
-| `MAILGUN_BASE_URL` | Mailgun API base URL |
-| `MAILGUN_API_KEY` | Mailgun API key for sending emails |
-| `MAILGUN_DOMAIN` | Mailgun sending domain |
-| `MAILGUN_FROM_EMAIL` | From address used in outgoing emails |
+| `RESEND_API_KEY` | Resend API key for sending emails |
+| `RESEND_FROM_EMAIL` | From address used in outgoing emails |
 | `GROWTH_ENDPOINT` | Base URL for the Appwrite growth API |
 
 ## Appwrite Setup
