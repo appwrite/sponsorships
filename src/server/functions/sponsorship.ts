@@ -32,7 +32,7 @@ const createApplicationSchema = z.object({
   email: z.string().email('A valid email is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
   eventName: z.string().min(1, 'Event name is required'),
-  eventLocation: z.string().min(1, 'Event location is required'),
+  eventLocation: z.enum(['virtual', 'in person', 'hybrid']),
   eventDate: z.string().min(1, 'Event date is required'),
   estimatedAttendees: z.number().int().min(1, 'Estimated attendees required'),
   eventWebsite: z.string().url('Must be a valid URL').nullable().optional(),
