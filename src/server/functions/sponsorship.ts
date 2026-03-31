@@ -93,7 +93,7 @@ export const createApplicationFn = createServerFn({ method: 'POST' })
           eventDate: payload.eventDate,
           eventType: payload.eventLocation,
           name: `${payload.firstName} ${payload.lastName}`,
-          socialHandles: socialHandles || undefined,
+          socialHandles: socialHandles || 'N/A',
           estimatedAttendees: payload.estimatedAttendees,
           eventPublicWebLink: payload.eventWebsite ?? undefined,
         }),
