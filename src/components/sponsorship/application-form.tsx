@@ -1,11 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { createApplicationFn } from '@/server/functions/sponsorship'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Loader2,
   Check,
@@ -22,7 +29,9 @@ const formSchema = z.object({
   email: z.string().email('Please enter a valid email'),
   organizationName: z.string().min(1, 'Organization name is required'),
   eventName: z.string().min(1, 'Event name is required'),
-  eventLocation: z.string().min(1, 'Event location is required'),
+  eventLocation: z.enum(['virtual', 'in person', 'hybrid'], {
+    message: 'Event type is required',
+  }),
   eventDate: z.string().min(1, 'Event date is required'),
   estimatedAttendees: z
     .string()
@@ -68,6 +77,7 @@ export function ApplicationForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<FormValues>({
@@ -315,16 +325,22 @@ export function ApplicationForm() {
             {/* Location + Date row */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div>
-                <label htmlFor="eventLocation" className={labelCls}>
-                  Event Location{' '}
-                </label>
-                <input
-                  id="eventLocation"
-                  {...register('eventLocation')}
-                  placeholder="San Francisco, CA / Online"
-                  className={inputCls}
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  required
+                <label className={labelCls}>Event Type</label>
+                <Controller
+                  name="eventLocation"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] px-3 text-sm text-[#E4E4E7] outline-none transition-all focus:border-[#E4E4E7] focus:ring-1 focus:ring-[#E4E4E7]/30 data-[placeholder]:text-[#6C6C71]">
+                        <SelectValue placeholder="Select event type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="virtual">Virtual</SelectItem>
+                        <SelectItem value="in person">In Person</SelectItem>
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
                 {errors.eventLocation && (
                   <p className={errorCls}>{errors.eventLocation.message}</p>

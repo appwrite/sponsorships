@@ -32,7 +32,7 @@ const createApplicationSchema = z.object({
   email: z.string().email('A valid email is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
   eventName: z.string().min(1, 'Event name is required'),
-  eventLocation: z.string().min(1, 'Event location is required'),
+  eventLocation: z.enum(['virtual', 'in person', 'hybrid']),
   eventDate: z.string().min(1, 'Event date is required'),
   estimatedAttendees: z.number().int().min(1, 'Estimated attendees required'),
   eventWebsite: z.string().url('Must be a valid URL').nullable().optional(),
@@ -93,7 +93,7 @@ export const createApplicationFn = createServerFn({ method: 'POST' })
           eventDate: payload.eventDate,
           eventType: payload.eventLocation,
           name: `${payload.firstName} ${payload.lastName}`,
-          socialHandles: socialHandles || undefined,
+          socialHandles: socialHandles || 'N/A',
           estimatedAttendees: payload.estimatedAttendees,
           eventPublicWebLink: payload.eventWebsite ?? undefined,
         }),
@@ -177,15 +177,12 @@ export const updateApplicationFn = createServerFn({ method: 'POST' })
     if (data.status === 'approved') {
       const row = await db.sponsorshipApplications.get(data.id)
 
-      const mailgunApiKey = process.env.MAILGUN_API_KEY
-      const mailgunDomain = process.env.MAILGUN_DOMAIN
-      const mailgunFromEmail =
-        process.env.MAILGUN_FROM_EMAIL ?? `sponsorship@${mailgunDomain}`
-      const mailgunBaseUrl =
-        process.env.MAILGUN_BASE_URL ?? 'https://api.mailgun.net'
+      const resendApiKey = process.env.RESEND_API_KEY
+      const resendFromEmail =
+        process.env.RESEND_FROM_EMAIL ?? 'sponsorship@appwrite.io'
 
-      if (!mailgunApiKey || !mailgunDomain) {
-        throw new Error('Mailgun environment variables are not configured')
+      if (!resendApiKey) {
+        throw new Error('RESEND_API_KEY environment variable is not configured')
       }
 
       const fullName = `${row.firstName} ${row.lastName}`
@@ -256,24 +253,20 @@ Ready to get started? Visit https://appwrite.io
 
 Happy hacking!`
 
-      const formData = new URLSearchParams()
-      formData.append('from', mailgunFromEmail)
-      formData.append('to', row.email)
-      formData.append('subject', `Appwrite sponsorship for ${eventName}`)
-      formData.append('text', textBody)
-      formData.append('html', htmlBody)
-
-      const response = await fetch(
-        `${mailgunBaseUrl}/v3/${mailgunDomain}/messages`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Basic ${Buffer.from(`api:${mailgunApiKey}`).toString('base64')}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: formData.toString(),
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          from: resendFromEmail,
+          to: row.email,
+          subject: `Appwrite sponsorship for ${eventName}`,
+          text: textBody,
+          html: htmlBody,
+        }),
+      })
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -309,7 +302,7 @@ Happy hacking!`
     }
   })
 
-// ─── Send Approval Email via Mailgun ─────────────────────────────────────────
+// ─── Send Approval Email via Resend ──────────────────────────────────────────
 
 const sendApprovalEmailSchema = z.object({
   applicationId: z.string().min(1),
@@ -327,15 +320,12 @@ export const sendApprovalEmailFn = createServerFn({ method: 'POST' })
 
     const row = await db.sponsorshipApplications.get(data.applicationId)
 
-    const mailgunApiKey = process.env.MAILGUN_API_KEY
-    const mailgunDomain = process.env.MAILGUN_DOMAIN
-    const mailgunFromEmail =
-      process.env.MAILGUN_FROM_EMAIL ?? `sponsorship@${mailgunDomain}`
-    const mailgunBaseUrl =
-      process.env.MAILGUN_BASE_URL ?? 'https://api.mailgun.net'
+    const resendApiKey = process.env.RESEND_API_KEY
+    const resendFromEmail =
+      process.env.RESEND_FROM_EMAIL ?? 'sponsorship@appwrite.io'
 
-    if (!mailgunApiKey || !mailgunDomain) {
-      throw new Error('Mailgun environment variables are not configured')
+    if (!resendApiKey) {
+      throw new Error('RESEND_API_KEY environment variable is not configured')
     }
 
     const fullName = `${row.firstName} ${row.lastName}`
@@ -403,28 +393,24 @@ Ready to get started? Visit https://appwrite.io
 
 Happy hacking!`
 
-    const formData = new URLSearchParams()
-    formData.append('from', mailgunFromEmail)
-    formData.append('to', row.email)
-    formData.append('subject', `Appwrite sponsorship for ${eventName}`)
-    formData.append('text', textBody)
-    formData.append('html', htmlBody)
-
-    const response = await fetch(
-      `${mailgunBaseUrl}/v3/${mailgunDomain}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Basic ${Buffer.from(`api:${mailgunApiKey}`).toString('base64')}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData.toString(),
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify({
+        from: resendFromEmail,
+        to: row.email,
+        subject: `Appwrite sponsorship for ${eventName}`,
+        text: textBody,
+        html: htmlBody,
+      }),
+    })
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`Mailgun error: ${response.status} - ${errorText}`)
+      throw new Error(`Resend error: ${response.status} - ${errorText}`)
     }
 
     return { success: true, email: row.email }

@@ -179,7 +179,7 @@ function ApplicationRow({ app }: { app: Application }) {
                 }),
               },
               { label: 'Email', value: app.email },
-              { label: 'Location', value: app.eventLocation },
+              { label: 'Event Type', value: app.eventLocation },
               { label: 'Attendees', value: app.estimatedAttendees.toString() },
               { label: 'Website', value: app.eventWebsite ?? '—' },
               { label: 'LinkedIn', value: app.linkedinUrl ?? '—' },
