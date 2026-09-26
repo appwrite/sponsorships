@@ -42,19 +42,14 @@ const formSchema = z.object({
     ),
   eventWebsite: z
     .string()
-    .url('Must be a valid URL')
-    .optional()
-    .or(z.literal('')),
+    .min(1, 'Event website is required')
+    .url('Must be a valid URL'),
   linkedinUrl: z
     .string()
     .url('Must be a valid URL')
     .optional()
     .or(z.literal('')),
-  xUrl: z
-    .string()
-    .url('Must be a valid URL')
-    .optional()
-    .or(z.literal('')),
+  xUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   instagramUrl: z
     .string()
     .url('Must be a valid URL')
@@ -96,7 +91,7 @@ export function ApplicationForm() {
           eventLocation: values.eventLocation,
           eventDate: values.eventDate,
           estimatedAttendees: Number(values.estimatedAttendees),
-          eventWebsite: values.eventWebsite || null,
+          eventWebsite: values.eventWebsite,
           linkedinUrl: values.linkedinUrl || null,
           xUrl: values.xUrl || null,
           instagramUrl: values.instagramUrl || null,
@@ -107,7 +102,11 @@ export function ApplicationForm() {
       reset()
     } catch (err) {
       console.error(err)
-      toast.error('Something went wrong. Please try again.')
+      toast.error(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Something went wrong. Please try again.',
+      )
     }
   }
 
@@ -484,7 +483,9 @@ export function ApplicationForm() {
                         <ExternalLink className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
                       </div>
                       {errors.instagramUrl && (
-                        <p className={errorCls}>{errors.instagramUrl.message}</p>
+                        <p className={errorCls}>
+                          {errors.instagramUrl.message}
+                        </p>
                       )}
                     </div>
 
