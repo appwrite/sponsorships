@@ -40,11 +40,12 @@ export type SubmissionResult =
  * The conversation is filed last so the team is only notified about saved applications, and a
  * failed database write can be retried without posting duplicate notifications.
  *
- * When Cloud answers with an error it has not filed anything, so the saved row is removed and the
- * applicant can retry: a rejection they can fix returns Cloud's message, and anything else throws
- * so the form shows a generic error. When no answer arrives, Cloud may already have filed the
- * conversation, so the application is kept and reported as received rather than risking a
- * duplicate notification on retry; the logged row ID identifies it in the admin panel.
+ * When Cloud refuses the request (4xx) it has not filed anything, so the saved row is removed and
+ * the applicant can retry: a rejection they can fix returns Cloud's message, and anything else
+ * throws so the form shows a generic error. When Cloud fails (5xx) or no answer arrives, it may
+ * already have filed the conversation, so the application is kept and reported as received rather
+ * than risking a duplicate notification on retry; the logged row ID identifies it in the admin
+ * panel.
  */
 export async function submitApplication(
   input: ApplicationInput,
@@ -91,7 +92,7 @@ export async function submitApplication(
       ip,
     })
   } catch (error) {
-    if (!(error instanceof GrowthError)) {
+    if (!(error instanceof GrowthError && error.rejected)) {
       console.error(
         `Sponsorship application ${row.$id} may not have been filed with Cloud`,
         error,

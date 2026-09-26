@@ -80,28 +80,33 @@ describe('submitApplication', () => {
     },
   )
 
-  it.each([
-    [404, 'Project not found'],
-    [500, 'Server Error'],
-  ])(
-    'fails so the applicant can retry, keeping nothing saved, on a %i',
-    async (status, message) => {
-      cloud(status, { message, code: status })
+  it('fails so the applicant can retry, keeping nothing saved, when Cloud refuses the request', async () => {
+    cloud(404, { message: 'Project not found', code: 404 })
 
-      const error = await submitApplication(input).catch(
-        (error: unknown) => error,
-      )
-
-      expect(error).toBeInstanceOf(Error)
-      expect(rows.size).toBe(0)
-    },
-  )
-
-  it('keeps the application when Cloud does not answer', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockRejectedValue(new TypeError('fetch failed')),
+    const error = await submitApplication(input).catch(
+      (error: unknown) => error,
     )
+
+    expect(error).toBeInstanceOf(Error)
+    expect(rows.size).toBe(0)
+  })
+
+  it.each([
+    [
+      'Cloud does not answer',
+      () => Promise.reject(new TypeError('fetch failed')),
+    ],
+    [
+      'Cloud fails',
+      () =>
+        Promise.resolve(
+          new Response(JSON.stringify({ message: 'Server Error' }), {
+            status: 500,
+          }),
+        ),
+    ],
+  ])('keeps the application when %s', async (_, response) => {
+    vi.stubGlobal('fetch', vi.fn(response))
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
     const result = await submitApplication(input)

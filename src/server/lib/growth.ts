@@ -27,6 +27,11 @@ export class GrowthError extends Error {
     this.status = status
   }
 
+  /** Whether Cloud refused the request outright, so no conversation was filed. */
+  get rejected(): boolean {
+    return this.status >= 400 && this.status < 500
+  }
+
   /** Whether the applicant can act on Cloud's message: invalid input or too many submissions. */
   get actionable(): boolean {
     return this.status === 400 || this.status === 429
