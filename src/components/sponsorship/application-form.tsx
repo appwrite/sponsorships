@@ -81,7 +81,7 @@ export function ApplicationForm() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await createApplicationFn({
+      const result = await createApplicationFn({
         data: {
           firstName: values.firstName,
           lastName: values.lastName,
@@ -98,15 +98,15 @@ export function ApplicationForm() {
           message: values.message || null,
         },
       })
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
       setSubmitted(true)
       reset()
     } catch (err) {
       console.error(err)
-      toast.error(
-        err instanceof Error && err.message
-          ? err.message
-          : 'Something went wrong. Please try again.',
-      )
+      toast.error('Something went wrong. Please try again.')
     }
   }
 

@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getRequestIP } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { db } from '@/server/lib/db'
-import { createSponsorshipConversation } from '@/server/lib/growth'
+import { submitApplication } from '@/server/lib/application'
 import { authMiddleware } from '@/server/functions/auth'
 import { Status } from '@/server/lib/appwrite.types'
 import type { SponsorshipApplications } from '@/server/lib/appwrite.types'
@@ -42,62 +42,9 @@ const createApplicationSchema = z.object({
 
 export const createApplicationFn = createServerFn({ method: 'POST' })
   .inputValidator(createApplicationSchema)
-  .handler(async ({ data }) => {
-    type ApplicationCreate = Omit<SponsorshipApplications, keyof Models.Row>
-
-    const payload: ApplicationCreate = {
-      firstName: data.firstName.trim(),
-      lastName: data.lastName.trim(),
-      email: data.email.trim(),
-      organizationName: data.organizationName.trim(),
-      eventName: data.eventName.trim(),
-      eventLocation: data.eventLocation.trim(),
-      eventDate: data.eventDate,
-      estimatedAttendees: data.estimatedAttendees,
-      eventWebsite: data.eventWebsite,
-      linkedinUrl: data.linkedinUrl ?? null,
-      xUrl: data.xUrl ?? null,
-      instagramUrl: data.instagramUrl ?? null,
-      message: data.message ?? null,
-      status: Status.PENDING,
-      couponCode: null,
-      createdBy: 'anonymous',
-    }
-
-    const socialHandles = [data.linkedinUrl, data.xUrl, data.instagramUrl]
-      .filter(Boolean)
-      .join('\n')
-
-    // Notify the team first so a rejected or rate limited request surfaces to the applicant
-    // before anything is stored, and a retry doesn't leave duplicate rows behind.
-    await createSponsorshipConversation({
-      name: `${payload.firstName} ${payload.lastName}`,
-      email: payload.email,
-      subject: 'Event Sponsorship Application',
-      eventName: payload.eventName,
-      eventDate: payload.eventDate,
-      eventType: data.eventLocation,
-      socialHandles: socialHandles || 'N/A',
-      estimatedAttendees: payload.estimatedAttendees,
-      eventPublicWebLink: data.eventWebsite,
-      ip: getRequestIP({ xForwardedFor: true }),
-    })
-
-    const row = await db.sponsorshipApplications.create(payload, {
-      permissions: [],
-    })
-
-    return {
-      application: {
-        id: row.$id,
-        firstName: row.firstName,
-        lastName: row.lastName,
-        email: row.email,
-        organizationName: row.organizationName,
-        status: row.status,
-      },
-    }
-  })
+  .handler(({ data }) =>
+    submitApplication(data, getRequestIP({ xForwardedFor: true })),
+  )
 
 export const listApplicationsFn = createServerFn({ method: 'GET' }).handler(
   async () => {
