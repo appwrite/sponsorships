@@ -38,10 +38,13 @@ export type SubmissionResult =
  * Saves the application, then files it with the Appwrite team as a Cloud conversation.
  *
  * The conversation is filed last so the team is only notified about saved applications, and a
- * failed database write can be retried without posting duplicate notifications. If Cloud rejects
- * the conversation for a reason the applicant can fix, the saved row is removed and Cloud's
- * message is returned. Any other failure, including a lost response after Cloud may already have
- * filed it, keeps the saved application and reports success so the applicant doesn't resubmit.
+ * failed database write can be retried without posting duplicate notifications.
+ *
+ * When Cloud answers with an error it has not filed anything, so the saved row is removed and the
+ * applicant can retry: a rejection they can fix returns Cloud's message, and anything else throws
+ * so the form shows a generic error. When no answer arrives, Cloud may already have filed the
+ * conversation, so the application is kept and reported as received rather than risking a
+ * duplicate notification on retry; the logged row ID identifies it in the admin panel.
  */
 export async function submitApplication(
   input: ApplicationInput,
@@ -88,9 +91,9 @@ export async function submitApplication(
       ip,
     })
   } catch (error) {
-    if (!(error instanceof GrowthError && error.actionable)) {
+    if (!(error instanceof GrowthError)) {
       console.error(
-        `Failed to file sponsorship application ${row.$id} with Cloud`,
+        `Sponsorship application ${row.$id} may not have been filed with Cloud`,
         error,
       )
       return { application: summarize(row) }
@@ -98,7 +101,10 @@ export async function submitApplication(
     await db.sponsorshipApplications.delete(row.$id).catch((cause) => {
       console.error('Failed to remove unfiled sponsorship application', cause)
     })
-    return { error: error.message }
+    if (error.actionable) {
+      return { error: error.message }
+    }
+    throw error
   }
 
   return { application: summarize(row) }

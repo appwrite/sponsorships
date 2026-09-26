@@ -81,41 +81,35 @@ describe('submitApplication', () => {
   )
 
   it.each([
-    [
-      'Cloud is unreachable',
-      () => Promise.reject(new TypeError('fetch failed')),
-    ],
-    [
-      'Cloud is misconfigured',
-      () =>
-        Promise.resolve(
-          new Response(JSON.stringify({ message: 'Project not found' }), {
-            status: 404,
-          }),
-        ),
-    ],
-    [
-      'Cloud fails internally',
-      () =>
-        Promise.resolve(
-          new Response(JSON.stringify({ message: 'Server Error' }), {
-            status: 500,
-          }),
-        ),
-    ],
+    [404, 'Project not found'],
+    [500, 'Server Error'],
   ])(
-    'keeps the application and hides the failure when %s',
-    async (_, response) => {
-      vi.stubGlobal('fetch', vi.fn(response))
-      vi.spyOn(console, 'error').mockImplementation(() => {})
+    'fails so the applicant can retry, keeping nothing saved, on a %i',
+    async (status, message) => {
+      cloud(status, { message, code: status })
 
-      const result = await submitApplication(input)
+      const error = await submitApplication(input).catch(
+        (error: unknown) => error,
+      )
 
-      expect(result.error).toBeUndefined()
-      expect(result.application?.email).toBe('ada@example.com')
-      expect(rows.size).toBe(1)
+      expect(error).toBeInstanceOf(Error)
+      expect(rows.size).toBe(0)
     },
   )
+
+  it('keeps the application when Cloud does not answer', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(new TypeError('fetch failed')),
+    )
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const result = await submitApplication(input)
+
+    expect(result.error).toBeUndefined()
+    expect(result.application?.email).toBe('ada@example.com')
+    expect(rows.size).toBe(1)
+  })
 
   it('notifies nobody when the application cannot be saved', async () => {
     const fetch = cloud(201, {})
