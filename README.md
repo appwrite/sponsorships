@@ -26,18 +26,18 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
-| Variable | Description |
-|---|---|
-| `APPWRITE_ENDPOINT` | Server-side Appwrite endpoint (e.g. `https://<REGION>.cloud.appwrite.io/v1`) |
-| `APPWRITE_PROJECT_ID` | Appwrite project ID (server-side) |
-| `APPWRITE_API_KEY` | Server API key with permissions for the project |
-| `APPWRITE_DB_ID` | Appwrite database ID containing the `sponsorship_applications` table (server-side) |
-| `VITE_APPWRITE_ENDPOINT` | Client-side Appwrite endpoint |
-| `VITE_APPWRITE_PROJECT_ID` | Appwrite project ID (client-side) |
-| `VITE_APPWRITE_DB_ID` | Appwrite database ID (client-side) |
-| `RESEND_API_KEY` | Resend API key for sending emails |
-| `RESEND_FROM_EMAIL` | From address used in outgoing emails |
-| `GROWTH_ENDPOINT` | Base URL for the Appwrite growth API |
+| Variable                   | Description                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `APPWRITE_ENDPOINT`        | Server-side Appwrite endpoint (e.g. `https://<REGION>.cloud.appwrite.io/v1`)                                                    |
+| `APPWRITE_PROJECT_ID`      | Appwrite project ID (server-side)                                                                                               |
+| `APPWRITE_API_KEY`         | Server API key with permissions for the project                                                                                 |
+| `APPWRITE_DB_ID`           | Appwrite database ID containing the `sponsorship_applications` table (server-side)                                              |
+| `VITE_APPWRITE_ENDPOINT`   | Client-side Appwrite endpoint                                                                                                   |
+| `VITE_APPWRITE_PROJECT_ID` | Appwrite project ID (client-side)                                                                                               |
+| `VITE_APPWRITE_DB_ID`      | Appwrite database ID (client-side)                                                                                              |
+| `RESEND_API_KEY`           | Resend API key for sending emails                                                                                               |
+| `RESEND_FROM_EMAIL`        | From address used in outgoing emails                                                                                            |
+| `APPWRITE_CLOUD_ENDPOINT`  | Appwrite Cloud API endpoint that sponsorship applications are sent to for the team (defaults to `https://cloud.appwrite.io/v1`) |
 
 ## Appwrite Setup
 
@@ -51,15 +51,15 @@ cp .env.example .env
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/` | Sponsorship application form (public) |
-| `/admin` | Admin panel — requires `admin` label on Appwrite user account |
-| `/sign-in` | Sign in |
-| `/sign-up` | Sign up |
-| `/sign-out` | Sign out |
-| `/forgot-password` | Request a password reset email |
-| `/reset-password` | Set a new password via recovery link |
+| Route              | Description                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| `/`                | Sponsorship application form (public)                         |
+| `/admin`           | Admin panel — requires `admin` label on Appwrite user account |
+| `/sign-in`         | Sign in                                                       |
+| `/sign-up`         | Sign up                                                       |
+| `/sign-out`        | Sign out                                                      |
+| `/forgot-password` | Request a password reset email                                |
+| `/reset-password`  | Set a new password via recovery link                          |
 
 ## Building for Production
 

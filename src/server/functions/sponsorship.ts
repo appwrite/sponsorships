@@ -1,13 +1,13 @@
 import { createServerFn } from '@tanstack/react-start'
+import { getRequestIP } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { db } from '@/server/lib/db'
+import { submitApplication } from '@/server/lib/application'
 import { authMiddleware } from '@/server/functions/auth'
 import { Status } from '@/server/lib/appwrite.types'
 import type { SponsorshipApplications } from '@/server/lib/appwrite.types'
 import type { Models } from 'node-appwrite'
 import { Query } from 'node-appwrite'
-
-// ─── Coupon normalization ─────────────────────────────────────────────────────
 
 const APPWRITE_CREDIT_BASE =
   'https://cloud.appwrite.io/console/apply-credit?code='
@@ -24,8 +24,6 @@ function normalizeCoupon(value: string): string {
   }
 }
 
-// ─── Create Application (public, no auth required) ───────────────────────────
-
 const createApplicationSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
@@ -35,7 +33,7 @@ const createApplicationSchema = z.object({
   eventLocation: z.enum(['virtual', 'in person', 'hybrid']),
   eventDate: z.string().min(1, 'Event date is required'),
   estimatedAttendees: z.number().int().min(1, 'Estimated attendees required'),
-  eventWebsite: z.string().url('Must be a valid URL').nullable().optional(),
+  eventWebsite: z.string().url('Must be a valid URL'),
   linkedinUrl: z.string().url('Must be a valid URL').nullable().optional(),
   xUrl: z.string().url('Must be a valid URL').nullable().optional(),
   instagramUrl: z.string().url('Must be a valid URL').nullable().optional(),
@@ -44,77 +42,9 @@ const createApplicationSchema = z.object({
 
 export const createApplicationFn = createServerFn({ method: 'POST' })
   .inputValidator(createApplicationSchema)
-  .handler(async ({ data }) => {
-    type ApplicationCreate = Omit<SponsorshipApplications, keyof Models.Row>
-
-    const payload: ApplicationCreate = {
-      firstName: data.firstName.trim(),
-      lastName: data.lastName.trim(),
-      email: data.email.trim(),
-      organizationName: data.organizationName.trim(),
-      eventName: data.eventName.trim(),
-      eventLocation: data.eventLocation.trim(),
-      eventDate: data.eventDate,
-      estimatedAttendees: data.estimatedAttendees,
-      eventWebsite: data.eventWebsite ?? null,
-      linkedinUrl: data.linkedinUrl ?? null,
-      xUrl: data.xUrl ?? null,
-      instagramUrl: data.instagramUrl ?? null,
-      message: data.message ?? null,
-      status: Status.PENDING,
-      couponCode: null,
-      createdBy: 'anonymous',
-    }
-
-    const row = await db.sponsorshipApplications.create(payload, {
-      permissions: [],
-    })
-
-    // Ping growth API with the application details, but don't block on it or fail the request if it errors
-    try {
-      const socialHandles = [
-        data.linkedinUrl,
-        data.xUrl,
-        data.instagramUrl,
-      ]
-        .filter(Boolean)
-        .join('\n')
-
-      const growthEndpoint = process.env.GROWTH_ENDPOINT
-      if (!growthEndpoint) throw new Error('GROWTH_ENDPOINT is not configured')
-
-      await fetch(`${growthEndpoint}/v1/feedback/sponsorships`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: payload.email,
-          subject: 'Event Sponsorship Application',
-          eventName: payload.eventName,
-          eventDate: payload.eventDate,
-          eventType: payload.eventLocation,
-          name: `${payload.firstName} ${payload.lastName}`,
-          socialHandles: socialHandles || 'N/A',
-          estimatedAttendees: payload.estimatedAttendees,
-          eventPublicWebLink: payload.eventWebsite ?? undefined,
-        }),
-      })
-    } catch (err) {
-      console.error('Failed to ping growth API:', err)
-    }
-
-    return {
-      application: {
-        id: row.$id,
-        firstName: row.firstName,
-        lastName: row.lastName,
-        email: row.email,
-        organizationName: row.organizationName,
-        status: row.status,
-      },
-    }
-  })
-
-// ─── List Applications (admin only) ──────────────────────────────────────────
+  .handler(({ data }) =>
+    submitApplication(data, getRequestIP({ xForwardedFor: true })),
+  )
 
 export const listApplicationsFn = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -154,8 +84,6 @@ export const listApplicationsFn = createServerFn({ method: 'GET' }).handler(
     }
   },
 )
-
-// ─── Update Application Status (admin only) ──────────────────────────────────
 
 const updateApplicationSchema = z.object({
   id: z.string().min(1),
@@ -301,8 +229,6 @@ Happy hacking!`
       },
     }
   })
-
-// ─── Send Approval Email via Resend ──────────────────────────────────────────
 
 const sendApprovalEmailSchema = z.object({
   applicationId: z.string().min(1),
