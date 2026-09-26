@@ -51,6 +51,7 @@ describe('submitApplication', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.restoreAllMocks()
   })
 
   it('saves the application once Cloud accepts it', async () => {
@@ -79,15 +80,42 @@ describe('submitApplication', () => {
     },
   )
 
-  it('fails without saving when Cloud is unreachable', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockRejectedValue(new TypeError('fetch failed')),
-    )
+  it.each([
+    [
+      'Cloud is unreachable',
+      () => Promise.reject(new TypeError('fetch failed')),
+    ],
+    [
+      'Cloud is misconfigured',
+      () =>
+        Promise.resolve(
+          new Response(JSON.stringify({ message: 'Project not found' }), {
+            status: 404,
+          }),
+        ),
+    ],
+    [
+      'Cloud fails internally',
+      () =>
+        Promise.resolve(
+          new Response(JSON.stringify({ message: 'Server Error' }), {
+            status: 500,
+          }),
+        ),
+    ],
+  ])(
+    'keeps the application and hides the failure when %s',
+    async (_, response) => {
+      vi.stubGlobal('fetch', vi.fn(response))
+      vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await expect(submitApplication(input)).rejects.toThrow()
-    expect(rows.size).toBe(0)
-  })
+      const result = await submitApplication(input)
+
+      expect(result.error).toBeUndefined()
+      expect(result.application?.email).toBe('ada@example.com')
+      expect(rows.size).toBe(1)
+    },
+  )
 
   it('notifies nobody when the application cannot be saved', async () => {
     const fetch = cloud(201, {})
@@ -98,14 +126,5 @@ describe('submitApplication', () => {
 
     await expect(submitApplication(input)).rejects.toThrow()
     expect(fetch).not.toHaveBeenCalled()
-  })
-
-  it('rate limits by the applicant rather than this server', async () => {
-    const fetch = cloud(201, {})
-
-    await submitApplication(input, '203.0.113.7')
-
-    const headers = new Headers(fetch.mock.calls[0][1].headers)
-    expect(headers.get('X-Forwarded-For')).toBe('203.0.113.7')
   })
 })

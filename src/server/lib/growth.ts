@@ -26,6 +26,11 @@ export class GrowthError extends Error {
     this.name = 'GrowthError'
     this.status = status
   }
+
+  /** Whether the applicant can act on Cloud's message: invalid input or too many submissions. */
+  get actionable(): boolean {
+    return this.status === 400 || this.status === 429
+  }
 }
 
 /**

@@ -39,7 +39,9 @@ export type SubmissionResult =
  *
  * The conversation is filed last so the team is only notified about saved applications, and a
  * failed database write can be retried without posting duplicate notifications. If Cloud rejects
- * the conversation, the saved row is removed so a retry doesn't leave duplicate applications.
+ * the conversation for a reason the applicant can fix, the saved row is removed and Cloud's
+ * message is returned. Any other failure, including a lost response after Cloud may already have
+ * filed it, keeps the saved application and reports success so the applicant doesn't resubmit.
  */
 export async function submitApplication(
   input: ApplicationInput,
@@ -86,23 +88,29 @@ export async function submitApplication(
       ip,
     })
   } catch (error) {
+    if (!(error instanceof GrowthError && error.actionable)) {
+      console.error(
+        `Failed to file sponsorship application ${row.$id} with Cloud`,
+        error,
+      )
+      return { application: summarize(row) }
+    }
     await db.sponsorshipApplications.delete(row.$id).catch((cause) => {
       console.error('Failed to remove unfiled sponsorship application', cause)
     })
-    if (error instanceof GrowthError) {
-      return { error: error.message }
-    }
-    throw error
+    return { error: error.message }
   }
 
+  return { application: summarize(row) }
+}
+
+function summarize(row: SponsorshipApplications): SubmittedApplication {
   return {
-    application: {
-      id: row.$id,
-      firstName: row.firstName,
-      lastName: row.lastName,
-      email: row.email,
-      organizationName: row.organizationName,
-      status: row.status,
-    },
+    id: row.$id,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    email: row.email,
+    organizationName: row.organizationName,
+    status: row.status,
   }
 }
