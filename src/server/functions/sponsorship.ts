@@ -12,6 +12,8 @@ import { Query } from 'node-appwrite'
 const APPWRITE_CREDIT_BASE =
   'https://cloud.appwrite.io/console/apply-credit?code='
 
+const LIST_BATCH_SIZE = 100
+
 /** If value is already a valid URL return as-is; otherwise convert to full credit URL. */
 function normalizeCoupon(value: string): string {
   const trimmed = value.trim()
@@ -55,13 +57,25 @@ export const listApplicationsFn = createServerFn({ method: 'GET' }).handler(
       (currentUser as Models.User<Models.Preferences>).labels ?? []
     if (!labels.includes('admin')) throw new Error('Forbidden: admin only')
 
-    const result = await db.sponsorshipApplications.list([
-      Query.orderDesc('$createdAt'),
-      Query.limit(100),
-    ])
+    // Fetch every application in batches; the admin panel paginates client-side
+    const rows: SponsorshipApplications[] = []
+    let cursor: string | undefined
+    do {
+      const result = await db.sponsorshipApplications.list([
+        Query.orderDesc('eventDate'),
+        Query.orderDesc('$createdAt'),
+        Query.limit(LIST_BATCH_SIZE),
+        ...(cursor ? [Query.cursorAfter(cursor)] : []),
+      ])
+      rows.push(...result.rows)
+      cursor =
+        result.rows.length === LIST_BATCH_SIZE
+          ? result.rows[result.rows.length - 1].$id
+          : undefined
+    } while (cursor)
 
     return {
-      applications: result.rows.map((row) => ({
+      applications: rows.map((row) => ({
         id: row.$id,
         firstName: row.firstName,
         lastName: row.lastName,
@@ -80,7 +94,7 @@ export const listApplicationsFn = createServerFn({ method: 'GET' }).handler(
         couponCode: row.couponCode,
         createdAt: row.$createdAt,
       })),
-      total: result.total,
+      total: rows.length,
     }
   },
 )

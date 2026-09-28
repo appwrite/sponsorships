@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
@@ -9,6 +9,8 @@ import {
 } from '@/server/functions/sponsorship'
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   Search,
   RefreshCw,
@@ -37,6 +39,8 @@ type Application = {
 
 const APPWRITE_CREDIT_BASE =
   'https://cloud.appwrite.io/console/apply-credit?code='
+
+const PAGE_SIZE = 20
 
 /** If the value is already a valid URL, return it as-is.
  *  Otherwise treat it as a bare coupon code and construct the full URL. */
@@ -304,6 +308,8 @@ function ApplicationRow({ app }: { app: Application }) {
 export function ApplicationsTable() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('pending')
+  const [page, setPage] = useState(1)
+  const listTopRef = useRef<HTMLDivElement>(null)
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['applications'],
@@ -320,6 +326,17 @@ export function ApplicationsTable() {
     return matchesSearch && matchesStatus
   })
 
+  // Clamp so the page stays valid when the list shrinks (e.g. after approving)
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const pageItems = filtered.slice(pageStart, pageStart + PAGE_SIZE)
+
+  const goToPage = (next: number) => {
+    setPage(next)
+    listTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const counts = {
     all: data?.applications.length ?? 0,
     pending:
@@ -331,14 +348,17 @@ export function ApplicationsTable() {
   }
 
   return (
-    <div>
+    <div ref={listTopRef} className="scroll-mt-6">
       {/* Search + Refresh */}
       <div className="mb-4 flex items-center gap-2 sm:gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6C6C71]" />
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPage(1)
+            }}
             placeholder="Search applications…"
             className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] pl-9 pr-4 text-sm text-[#E4E4E7] placeholder-[#6C6C71] outline-none focus:border-[#E4E4E7] focus:ring-1 focus:ring-[#E4E4E7]/30"
           />
@@ -362,7 +382,10 @@ export function ApplicationsTable() {
           <button
             key={s}
             type="button"
-            onClick={() => setStatusFilter(s)}
+            onClick={() => {
+              setStatusFilter(s)
+              setPage(1)
+            }}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               statusFilter === s
                 ? 'bg-white text-[#19191C]'
@@ -395,11 +418,48 @@ export function ApplicationsTable() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {filtered.map((app) => (
-            <ApplicationRow key={app.id} app={app} />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-3">
+            {pageItems.map((app) => (
+              <ApplicationRow key={app.id} app={app} />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {pageCount > 1 && (
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <p className="text-xs text-[#6C6C71]">
+                {pageStart + 1}–{pageStart + pageItems.length} of{' '}
+                {filtered.length}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  aria-label="Previous page"
+                  className="h-9 flex items-center gap-1 rounded-lg border border-white/10 px-3 text-xs font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Previous</span>
+                </button>
+                <span className="text-xs text-[#ADADB0] tabular-nums">
+                  Page {currentPage} of {pageCount}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === pageCount}
+                  aria-label="Next page"
+                  className="h-9 flex items-center gap-1 rounded-lg border border-white/10 px-3 text-xs font-medium text-[#ADADB0] hover:text-[#E4E4E7] hover:border-white/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
