@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ApplicationForm } from '@/components/sponsorship/application-form'
+import { SponsorshipsPaused } from '@/components/sponsorship/sponsorships-paused'
 import { authMiddleware } from '@/server/functions/auth'
 import type { Models } from 'node-appwrite'
 
@@ -77,9 +77,9 @@ function Index() {
         </div>
       </nav>
 
-      {/* Application Form */}
+      {/* Sponsorships paused notice */}
       <div className="relative z-10 flex-1">
-        <ApplicationForm />
+        <SponsorshipsPaused />
       </div>
 
       {/* Footer */}
